@@ -1,6 +1,5 @@
 <script lang="ts">
 	import TreeCanvas from './TreeCanvas.svelte';
-	import ScorePanel from './ScorePanel.svelte';
 	import type { TreePolygon, AABB } from '$lib/core/tree';
 	import type { GroupScore } from '$lib/core/scorer';
 	import type { CollisionResult } from '$lib/core/validator';
@@ -50,12 +49,8 @@
 					showBoundingBox={true}
 					width={canvasSize}
 					height={canvasSize}
-				/>
-				<ScorePanel
-					groupScore={submissions[0].groupScore}
-					totalScore={submissions[0].totalScore}
-					collisionResult={submissions[0].collisionResult}
-					boundsValid={submissions[0].boundsValid}
+					n={submissions[0].groupScore.n}
+					score={submissions[0].groupScore.contribution}
 				/>
 			</div>
 		</div>
@@ -81,12 +76,8 @@
 						showBoundingBox={true}
 						width={canvasSize}
 						height={canvasSize}
-					/>
-					<ScorePanel
-						groupScore={submission.groupScore}
-						totalScore={submission.totalScore}
-						collisionResult={submission.collisionResult}
-						boundsValid={submission.boundsValid}
+						n={submission.groupScore.n}
+						score={submission.groupScore.contribution}
 					/>
 				</div>
 			{/each}

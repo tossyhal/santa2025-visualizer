@@ -40,7 +40,7 @@
 
 <div class="slider-container">
 	<label class="slider-label">
-		<span class="label-text">N (ツリー数)</span>
+		<span class="label-text">ツリー数</span>
 		<div class="input-group">
 			<button class="btn-step" onclick={decrement} disabled={value <= min}>−</button>
 			<input
@@ -78,11 +78,13 @@
 	.slider-container {
 		display: flex;
 		flex-direction: column;
-		gap: 12px;
-		padding: 16px;
-		background: linear-gradient(135deg, #1a2d47 0%, #0d1a2d 100%);
+		gap: 8px;
+		padding: 10px 16px;
+		background: var(--panel);
 		border-radius: 12px;
-		border: 1px solid #2a4a6a;
+		border: 1px solid var(--border);
+		box-shadow: var(--shadow);
+		max-width: 240px;
 	}
 
 	.slider-label {
@@ -95,9 +97,10 @@
 	.label-text {
 		font-size: 14px;
 		font-weight: 600;
-		color: #8ab4d8;
+		color: var(--text);
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
+		white-space: nowrap;
 	}
 
 	.input-group {
@@ -109,10 +112,10 @@
 	.btn-step {
 		width: 32px;
 		height: 32px;
-		border: none;
+		border: 1px solid var(--border);
 		border-radius: 6px;
-		background: #2a4a6a;
-		color: #8ab4d8;
+		background: var(--accent-soft);
+		color: var(--accent);
 		font-size: 18px;
 		font-weight: bold;
 		cursor: pointer;
@@ -120,8 +123,9 @@
 	}
 
 	.btn-step:hover:not(:disabled) {
-		background: #3a5a7a;
-		color: #fff;
+		background: #d8e5ff;
+		border-color: var(--accent);
+		color: var(--accent-strong);
 	}
 
 	.btn-step:disabled {
@@ -132,10 +136,10 @@
 	.num-input {
 		width: 64px;
 		height: 32px;
-		border: 1px solid #2a4a6a;
+		border: 1px solid var(--border);
 		border-radius: 6px;
-		background: #0a1628;
-		color: #e0f0ff;
+		background: #fff;
+		color: var(--text);
 		font-size: 16px;
 		font-weight: 600;
 		text-align: center;
@@ -150,7 +154,7 @@
 
 	.num-input:focus {
 		outline: none;
-		border-color: #4a8aaa;
+		border-color: var(--accent);
 	}
 
 	.slider-wrapper {
@@ -165,7 +169,7 @@
 		width: 100%;
 		height: 8px;
 		border-radius: 4px;
-		background: linear-gradient(90deg, #1a3a5a 0%, #2a5a8a 100%);
+		background: linear-gradient(90deg, #dbe8ff 0%, #bcd3ff 100%);
 		outline: none;
 		cursor: pointer;
 	}
@@ -173,26 +177,26 @@
 	.slider::-webkit-slider-thumb {
 		-webkit-appearance: none;
 		appearance: none;
-		width: 20px;
-		height: 20px;
+		width: 14px;
+		height: 14px;
 		border-radius: 50%;
-		background: linear-gradient(135deg, #4a9aca 0%, #2a6a8a 100%);
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+		background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+		box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
 		cursor: pointer;
 		transition: transform 0.15s;
 	}
 
 	.slider::-webkit-slider-thumb:hover {
-		transform: scale(1.15);
+		transform: scale(1.1);
 	}
 
 	.slider::-moz-range-thumb {
-		width: 20px;
-		height: 20px;
+		width: 14px;
+		height: 14px;
 		border: none;
 		border-radius: 50%;
-		background: linear-gradient(135deg, #4a9aca 0%, #2a6a8a 100%);
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+		background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+		box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
 		cursor: pointer;
 	}
 
@@ -201,7 +205,7 @@
 		justify-content: space-between;
 		padding: 0 4px;
 		font-size: 11px;
-		color: #5a7a9a;
+		color: var(--muted);
 	}
 </style>
 

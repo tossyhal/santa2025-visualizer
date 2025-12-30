@@ -27,44 +27,21 @@
 				<span class="stat-label">N</span>
 				<span class="stat-value">{groupScore.n}</span>
 			</div>
-			
+
 			<div class="stat-item">
 				<span class="stat-label">一辺長 (s_N)</span>
-				<span class="stat-value">{formatNumber(groupScore.sideLength, 4)}</span>
+				<span class="stat-value">{formatNumber(groupScore.sideLength, 6)}</span>
 			</div>
-			
+
 			<div class="stat-item">
 				<span class="stat-label">寄与 (s²/N)</span>
-				<span class="stat-value">{formatNumber(groupScore.contribution, 4)}</span>
+				<span class="stat-value">{formatNumber(groupScore.contribution, 6)}</span>
 			</div>
 		{/if}
-		
-		<div class="stat-item total">
-			<span class="stat-label">累積スコア</span>
-			<span class="stat-value">{formatNumber(totalScore, 4)}</span>
-		</div>
 	</div>
 	
 	<div class="validation-section">
 		<h4>バリデーション</h4>
-		
-		<div class="validation-item" class:valid={!collisionResult?.hasCollision} class:invalid={collisionResult?.hasCollision}>
-			<span class="validation-icon">{collisionResult?.hasCollision ? '✗' : '✓'}</span>
-			<span class="validation-text">
-				{#if collisionResult?.hasCollision}
-					衝突: {collisionResult.collisionPairs.length}ペア
-				{:else}
-					衝突なし
-				{/if}
-			</span>
-		</div>
-		
-		<div class="validation-item" class:valid={boundsValid} class:invalid={!boundsValid}>
-			<span class="validation-icon">{boundsValid ? '✓' : '✗'}</span>
-			<span class="validation-text">
-				{boundsValid ? '座標範囲OK' : '座標範囲外あり'}
-			</span>
-		</div>
 	</div>
 	
 	{#if collisionResult?.hasCollision && collisionResult.collisionPairs.length > 0}
@@ -84,20 +61,21 @@
 
 <style>
 	.score-panel {
-		background: linear-gradient(135deg, #1a2d47 0%, #0d1a2d 100%);
+		background: var(--panel);
 		border-radius: 12px;
-		border: 1px solid #2a4a6a;
+		border: 1px solid var(--border);
 		padding: 16px;
 		display: flex;
 		flex-direction: column;
 		gap: 16px;
+		box-shadow: var(--shadow);
 	}
 
 	.panel-header h3 {
 		margin: 0;
 		font-size: 14px;
 		font-weight: 600;
-		color: #8ab4d8;
+		color: var(--accent-strong);
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
 	}
@@ -112,24 +90,25 @@
 		justify-content: space-between;
 		align-items: center;
 		padding: 8px 12px;
-		background: rgba(0, 0, 0, 0.2);
+		background: var(--panel-strong);
 		border-radius: 6px;
+		border: 1px solid var(--border);
 	}
 
 	.stat-item.total {
-		background: linear-gradient(135deg, #2a4a6a 0%, #1a3a5a 100%);
-		border: 1px solid #3a6a8a;
+		background: var(--accent-soft);
+		border: 1px solid #c7d7f5;
 	}
 
 	.stat-label {
 		font-size: 12px;
-		color: #6a9aba;
+		color: var(--muted);
 	}
 
 	.stat-value {
 		font-size: 16px;
 		font-weight: 700;
-		color: #e0f0ff;
+		color: var(--text);
 		font-family: 'SF Mono', 'Consolas', monospace;
 	}
 
@@ -153,13 +132,13 @@
 	}
 
 	.validation-item.valid {
-		background: rgba(45, 90, 39, 0.3);
-		border: 1px solid #4a8a4a;
+		background: #ecf8f0;
+		border: 1px solid #c7e8d4;
 	}
 
 	.validation-item.invalid {
-		background: rgba(139, 38, 53, 0.3);
-		border: 1px solid #8a3a4a;
+		background: #ffe8ec;
+		border: 1px solid #f8c7d1;
 	}
 
 	.validation-icon {
@@ -168,21 +147,21 @@
 	}
 
 	.valid .validation-icon {
-		color: #6aba6a;
+		color: var(--success);
 	}
 
 	.invalid .validation-icon {
-		color: #ba6a6a;
+		color: var(--danger);
 	}
 
 	.validation-text {
 		font-size: 13px;
-		color: #c0d0e0;
+		color: var(--text);
 	}
 
 	.collision-details {
 		padding-top: 8px;
-		border-top: 1px solid #2a4a6a;
+		border-top: 1px solid var(--border);
 	}
 
 	.collision-list {
@@ -193,13 +172,13 @@
 
 	.collision-list li {
 		font-size: 12px;
-		color: #ba8a8a;
+		color: var(--danger);
 		padding: 4px 0;
 		font-family: 'SF Mono', 'Consolas', monospace;
 	}
 
 	.collision-list li.more {
-		color: #8a8a9a;
+		color: var(--muted);
 		font-style: italic;
 	}
 </style>

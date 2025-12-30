@@ -5,7 +5,7 @@
 		multiple?: boolean;
 	}
 
-	let { onFilesSelected, accept = '.csv', multiple = true }: Props = $props();
+	let { onFilesSelected, accept = '.csv', multiple = false }: Props = $props();
 
 	let isDragOver = $state(false);
 	let fileInput: HTMLInputElement;
@@ -14,27 +14,29 @@
 		e.preventDefault();
 		isDragOver = false;
 		
-		const files: File[] = [];
+		let selectedFile: File | null = null;
 		
 		if (e.dataTransfer?.items) {
 			for (const item of e.dataTransfer.items) {
 				if (item.kind === 'file') {
 					const file = item.getAsFile();
 					if (file && file.name.endsWith('.csv')) {
-						files.push(file);
+						selectedFile = file;
+						break;
 					}
 				}
 			}
 		} else if (e.dataTransfer?.files) {
 			for (const file of e.dataTransfer.files) {
 				if (file.name.endsWith('.csv')) {
-					files.push(file);
+					selectedFile = file;
+					break;
 				}
 			}
 		}
 		
-		if (files.length > 0) {
-			onFilesSelected(files);
+		if (selectedFile) {
+			onFilesSelected([selectedFile]);
 		}
 	}
 
@@ -53,7 +55,7 @@
 		if (target.files) {
 			const files = Array.from(target.files).filter(f => f.name.endsWith('.csv'));
 			if (files.length > 0) {
-				onFilesSelected(files);
+				onFilesSelected([files[0]]);
 			}
 		}
 	}
@@ -99,22 +101,23 @@
 		align-items: center;
 		justify-content: center;
 		padding: 32px 24px;
-		border: 2px dashed #3a5a7a;
+		border: 2px dashed var(--accent);
 		border-radius: 12px;
-		background: linear-gradient(135deg, #0d1a2d 0%, #1a2d47 100%);
+		background: var(--panel);
 		cursor: pointer;
 		transition: all 0.2s;
+		box-shadow: var(--shadow);
 	}
 
 	.drop-zone:hover,
 	.drop-zone.drag-over {
-		border-color: #4a9aca;
-		background: linear-gradient(135deg, #1a2d47 0%, #2a4a6a 100%);
+		border-color: var(--accent-strong);
+		background: var(--accent-soft);
 	}
 
 	.drop-zone.drag-over {
 		transform: scale(1.02);
-		box-shadow: 0 0 20px rgba(74, 154, 202, 0.3);
+		box-shadow: 0 12px 30px rgba(37, 99, 235, 0.15);
 	}
 
 	.drop-content {
@@ -122,13 +125,13 @@
 		flex-direction: column;
 		align-items: center;
 		gap: 8px;
-		color: #8ab4d8;
+		color: var(--text);
 	}
 
 	.drop-icon {
 		width: 48px;
 		height: 48px;
-		opacity: 0.7;
+		opacity: 0.9;
 	}
 
 	.drop-text {
@@ -139,7 +142,7 @@
 
 	.drop-subtext {
 		font-size: 13px;
-		opacity: 0.6;
+		color: var(--muted);
 		margin: 0;
 	}
 </style>

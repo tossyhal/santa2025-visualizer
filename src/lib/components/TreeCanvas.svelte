@@ -8,6 +8,8 @@
 		showBoundingBox: boolean;
 		width?: number;
 		height?: number;
+		n?: number;
+		score?: number;
 	}
 
 	let {
@@ -16,7 +18,9 @@
 		collidingIndices,
 		showBoundingBox = true,
 		width = 600,
-		height = 600
+		height = 600,
+		n,
+		score
 	}: Props = $props();
 
 	// Calculate view transform
@@ -51,15 +55,18 @@
 	function getBoundingBoxPath(): string {
 		if (!globalAABB || !isFinite(globalAABB.minX)) return '';
 		const { minX, maxX, minY, maxY } = globalAABB;
-		const side = Math.max(maxX - minX, maxY - minY);
+		const aabbWidth = maxX - minX;
+		const aabbHeight = maxY - minY;
+		const side = Math.max(aabbWidth, aabbHeight);
 		const centerX = (minX + maxX) / 2;
 		const centerY = (minY + maxY) / 2;
-		
-		// Square bounding box
+
+		// Square bounding box centered on the AABB
 		const x1 = centerX - side / 2;
-		const y1 = -centerY - side / 2;
-		
-		return `M${x1},${y1} h${side} v${side} h${-side} Z`;
+		const y1 = centerY - side / 2;
+
+		// Return path with flipped Y coordinates
+		return `M${x1},${-y1} h${side} v${-side} h${-side} Z`;
 	}
 
 	// Reference to SVG element for export
@@ -80,18 +87,49 @@
 >
 	<defs>
 		<linearGradient id="treeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-			<stop offset="0%" style="stop-color:#2d5a27;stop-opacity:1" />
-			<stop offset="100%" style="stop-color:#1a3a16;stop-opacity:1" />
+			<stop offset="0%" style="stop-color:#86efac;stop-opacity:1" />
+			<stop offset="100%" style="stop-color:#4ade80;stop-opacity:1" />
 		</linearGradient>
 		<linearGradient id="collisionGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-			<stop offset="0%" style="stop-color:#8b2635;stop-opacity:1" />
-			<stop offset="100%" style="stop-color:#5a1a23;stop-opacity:1" />
+			<stop offset="0%" style="stop-color:#f87171;stop-opacity:1" />
+			<stop offset="100%" style="stop-color:#ef4444;stop-opacity:1" />
 		</linearGradient>
 	</defs>
 	
 	<!-- Background -->
-	<rect x="-1000" y="-1000" width="2000" height="2000" fill="#0a1628" />
-	
+	<rect x="-1000" y="-1000" width="2000" height="2000" fill="#f7fbff" />
+
+	<!-- Score info overlay -->
+	{#if n !== undefined && score !== undefined}
+		{@const infoY = globalAABB && isFinite(globalAABB.minY) ? globalAABB.maxY + 3 : 103}
+		{@const infoX = globalAABB && isFinite(globalAABB.minX) ? (globalAABB.minX + globalAABB.maxX) / 2 : 0}
+		<g class="score-info">
+			<rect
+				x={infoX - 18}
+				y={-infoY - 2}
+				width="36"
+				height="3.2"
+				fill="rgba(255, 255, 255, 0.95)"
+				stroke="#2563eb"
+				stroke-width="0.12"
+				rx="0.4"
+				opacity="0.95"
+			/>
+			<text
+				x={infoX}
+				y={-infoY}
+				font-family="'SF Mono', 'Consolas', monospace"
+				font-size="1.1"
+				font-weight="700"
+				fill="#1e40af"
+				text-anchor="middle"
+				dominant-baseline="middle"
+			>
+				N={n} Score={score.toFixed(6)}
+			</text>
+		</g>
+	{/if}
+
 	<!-- Grid lines -->
 	{#each Array.from({ length: 21 }, (_, i) => i * 10 - 100) as line}
 		<line
@@ -99,7 +137,7 @@
 			y1={100}
 			x2={line}
 			y2={-100}
-			stroke="#1a2d47"
+			stroke="#d8e4f5"
 			stroke-width="0.05"
 		/>
 		<line
@@ -107,22 +145,22 @@
 			y1={-line}
 			x2={100}
 			y2={-line}
-			stroke="#1a2d47"
+			stroke="#d8e4f5"
 			stroke-width="0.05"
 		/>
 	{/each}
-	
+
 	<!-- Origin marker -->
-	<circle cx="0" cy="0" r="0.15" fill="#3a5a7a" />
-	
+	<circle cx="0" cy="0" r="0.1" fill="#2563eb" />
+
 	<!-- Bounding box -->
 	{#if showBoundingBox && globalAABB && isFinite(globalAABB.minX)}
 		<path
 			d={getBoundingBoxPath()}
 			fill="none"
-			stroke="#f0a030"
+			stroke="#1d4ed8"
 			stroke-width="0.08"
-			stroke-dasharray="0.3,0.15"
+			stroke-dasharray="0.28,0.14"
 		/>
 	{/if}
 	
@@ -131,7 +169,7 @@
 		<path
 			d={polygonToPath(tree.vertices)}
 			fill={collidingIndices.has(i) ? 'url(#collisionGradient)' : 'url(#treeGradient)'}
-			stroke={collidingIndices.has(i) ? '#ff4d5a' : '#4a8a4a'}
+			stroke={collidingIndices.has(i) ? '#e11d48' : '#22c55e'}
 			stroke-width="0.02"
 		/>
 	{/each}
@@ -139,9 +177,9 @@
 
 <style>
 	.tree-canvas {
-		background: #0a1628;
+		background: var(--canvas-bg);
 		border-radius: 8px;
-		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+		box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
 	}
 </style>
 

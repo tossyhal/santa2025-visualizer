@@ -65,10 +65,10 @@ export async function exportAsPng(
 		const url = URL.createObjectURL(svgBlob);
 		
 		img.onload = () => {
-			// Draw white background
-			ctx.fillStyle = '#0a1628';
+			// Draw background matching canvas
+			ctx.fillStyle = '#f7fbff';
 			ctx.fillRect(0, 0, width, height);
-			
+
 			// Draw SVG
 			ctx.drawImage(img, 0, 0, width, height);
 			
