@@ -19,10 +19,53 @@ function aabbOverlap(a: AABB, b: AABB): boolean {
 }
 
 /**
+ * Check if a point lies on a line segment (with epsilon tolerance)
+ */
+function pointOnSegment(px: number, py: number, x1: number, y1: number, x2: number, y2: number): boolean {
+	const eps = 1e-9;
+	
+	// Check if point is within bounding box of segment
+	const minX = Math.min(x1, x2) - eps;
+	const maxX = Math.max(x1, x2) + eps;
+	const minY = Math.min(y1, y2) - eps;
+	const maxY = Math.max(y1, y2) + eps;
+	
+	if (px < minX || px > maxX || py < minY || py > maxY) {
+		return false;
+	}
+	
+	// Check if point is on the line (cross product should be ~0)
+	const cross = (px - x1) * (y2 - y1) - (py - y1) * (x2 - x1);
+	return Math.abs(cross) < eps;
+}
+
+/**
+ * Check if a point lies on any edge of the polygon
+ */
+function pointOnPolygonBoundary(px: number, py: number, vertices: Point[]): boolean {
+	const n = vertices.length;
+	for (let i = 0; i < n; i++) {
+		const j = (i + 1) % n;
+		if (pointOnSegment(px, py, vertices[i].x, vertices[i].y, vertices[j].x, vertices[j].y)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
  * Point-in-polygon test using ray casting
  * Returns true if point is strictly inside (boundary is outside)
+ * 
+ * When a point is exactly on the boundary, it is treated as outside
+ * since "touching is allowed" in this competition.
  */
 function pointInPolygon(px: number, py: number, vertices: Point[]): boolean {
+	// First check if point is on the boundary - if so, treat as outside
+	if (pointOnPolygonBoundary(px, py, vertices)) {
+		return false;
+	}
+	
 	let inside = false;
 	let j = vertices.length - 1;
 	
@@ -49,6 +92,9 @@ function pointInPolygon(px: number, py: number, vertices: Point[]): boolean {
 /**
  * Strict segment intersection test
  * Returns true only for proper crossings (not endpoints or collinear)
+ * 
+ * Uses epsilon tolerance to handle floating point precision issues.
+ * When segments touch at endpoints, this should return false.
  */
 function segmentsIntersectStrict(
 	ax: number, ay: number,
@@ -61,7 +107,27 @@ function segmentsIntersectStrict(
 	const d3 = (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
 	const d4 = (bx - ax) * (dy - ay) - (by - ay) * (dx - ax);
 	
-	return ((d1 > 0) !== (d2 > 0)) && ((d3 > 0) !== (d4 > 0));
+	// Use epsilon to handle floating point precision issues
+	// If any d value is very close to 0, the segments are touching at an endpoint
+	// or are collinear, so we don't count it as an intersection
+	const eps = 1e-12;
+	
+	// Check for proper crossing: d1 and d2 must have opposite signs (strictly)
+	// and d3 and d4 must have opposite signs (strictly)
+	const d1Pos = d1 > eps;
+	const d1Neg = d1 < -eps;
+	const d2Pos = d2 > eps;
+	const d2Neg = d2 < -eps;
+	const d3Pos = d3 > eps;
+	const d3Neg = d3 < -eps;
+	const d4Pos = d4 > eps;
+	const d4Neg = d4 < -eps;
+	
+	// Segments cross if d1 and d2 have strictly opposite signs AND d3 and d4 have strictly opposite signs
+	const crossCD = (d1Pos && d2Neg) || (d1Neg && d2Pos);
+	const crossAB = (d3Pos && d4Neg) || (d3Neg && d4Pos);
+	
+	return crossCD && crossAB;
 }
 
 /**
