@@ -26,20 +26,33 @@
 	// Calculate view transform
 	const padding = 20;
 	
-	let viewBox = $derived(() => {
+	// Header height for score info (in SVG units, will be scaled proportionally)
+	const headerRatio = 0.08; // 8% of view height for header
+
+	let viewBoxData = $derived(() => {
 		if (!globalAABB || !isFinite(globalAABB.minX)) {
-			return '-10 -10 20 20';
+			return { viewBox: '-10 -10 20 20', viewSide: 20, centerX: 0, centerY: 0 };
 		}
-		
+
 		const aabbWidth = globalAABB.maxX - globalAABB.minX;
 		const aabbHeight = globalAABB.maxY - globalAABB.minY;
 		const side = Math.max(aabbWidth, aabbHeight, 2);
 		const centerX = (globalAABB.minX + globalAABB.maxX) / 2;
 		const centerY = (globalAABB.minY + globalAABB.maxY) / 2;
-		
-		// Add padding and flip Y axis
+
+		// Add padding
 		const viewSide = side * 1.1;
-		return `${centerX - viewSide / 2} ${-centerY - viewSide / 2} ${viewSide} ${viewSide}`;
+		// Add extra space at top for header
+		const headerHeight = viewSide * headerRatio;
+		const totalHeight = viewSide + headerHeight;
+
+		return {
+			viewBox: `${centerX - viewSide / 2} ${-centerY - viewSide / 2 - headerHeight} ${viewSide} ${totalHeight}`,
+			viewSide,
+			centerX,
+			centerY,
+			headerHeight
+		};
 	});
 
 	function polygonToPath(vertices: { x: number; y: number }[]): string {
@@ -76,7 +89,7 @@
 	bind:this={svgElement}
 	{width}
 	{height}
-	viewBox={viewBox()}
+	viewBox={viewBoxData().viewBox}
 	xmlns="http://www.w3.org/2000/svg"
 	class="tree-canvas"
 >
@@ -94,59 +107,25 @@
 	<!-- Background -->
 	<rect x="-1000" y="-1000" width="2000" height="2000" fill="#f7fbff" />
 
-	<!-- Score info overlay -->
+	<!-- Score info overlay at top of view -->
 	{#if n !== undefined && score !== undefined}
-		{@const infoY = globalAABB && isFinite(globalAABB.minY) ? globalAABB.maxY + 3 : 103}
-		{@const infoX = globalAABB && isFinite(globalAABB.minX) ? (globalAABB.minX + globalAABB.maxX) / 2 : 0}
-		<g class="score-info">
-			<rect
-				x={infoX - 18}
-				y={-infoY - 2}
-				width="36"
-				height="3.2"
-				fill="rgba(255, 255, 255, 0.95)"
-				stroke="#2563eb"
-				stroke-width="0.12"
-				rx="0.4"
-				opacity="0.95"
-			/>
-			<text
-				x={infoX}
-				y={-infoY}
-				font-family="'SF Mono', 'Consolas', monospace"
-				font-size="1.1"
-				font-weight="700"
-				fill="#1e40af"
-				text-anchor="middle"
-				dominant-baseline="middle"
-			>
-				N={n} Score={score.toFixed(6)}
-			</text>
-		</g>
+		{@const vb = viewBoxData()}
+		{@const fontSize = vb.viewSide * 0.035}
+		{@const headerY = -vb.centerY - vb.viewSide / 2 - vb.headerHeight * 0.5}
+		<text
+			x={vb.centerX}
+			y={headerY}
+			font-family="'SF Mono', 'Consolas', monospace"
+			font-size={fontSize}
+			font-weight="700"
+			fill="#000000"
+			text-anchor="middle"
+			dominant-baseline="middle"
+		>
+			N={n}  Score={score.toFixed(6)}
+		</text>
 	{/if}
 
-	<!-- Grid lines -->
-	{#each Array.from({ length: 21 }, (_, i) => i * 10 - 100) as line}
-		<line
-			x1={line}
-			y1={100}
-			x2={line}
-			y2={-100}
-			stroke="#d8e4f5"
-			stroke-width="0.05"
-		/>
-		<line
-			x1={-100}
-			y1={-line}
-			x2={100}
-			y2={-line}
-			stroke="#d8e4f5"
-			stroke-width="0.05"
-		/>
-	{/each}
-
-	<!-- Origin marker -->
-	<circle cx="0" cy="0" r="0.1" fill="#2563eb" />
 
 	<!-- Bounding box -->
 	{#if showBoundingBox && globalAABB && isFinite(globalAABB.minX)}
