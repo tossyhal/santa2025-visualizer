@@ -55,18 +55,13 @@
 	function getBoundingBoxPath(): string {
 		if (!globalAABB || !isFinite(globalAABB.minX)) return '';
 		const { minX, maxX, minY, maxY } = globalAABB;
-		const aabbWidth = maxX - minX;
-		const aabbHeight = maxY - minY;
-		const side = Math.max(aabbWidth, aabbHeight);
-		const centerX = (minX + maxX) / 2;
-		const centerY = (minY + maxY) / 2;
+		const width = maxX - minX;
+		const height = maxY - minY;
 
-		// Square bounding box centered on the AABB
-		const x1 = centerX - side / 2;
-		const y1 = centerY - side / 2;
-
-		// Return path with flipped Y coordinates
-		return `M${x1},${-y1} h${side} v${-side} h${-side} Z`;
+		// Rectangle bounding box that fits the AABB exactly
+		// In original coords (Y up): bottom-left is (minX, minY), top-left is (minX, maxY)
+		// After Y-flip: we start from (minX, -maxY) and draw clockwise
+		return `M${minX},${-maxY} h${width} v${height} h${-width} Z`;
 	}
 
 	// Reference to SVG element for export
