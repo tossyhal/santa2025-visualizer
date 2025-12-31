@@ -109,7 +109,7 @@
 		font-size: 16px;
 		font-weight: 700;
 		color: var(--text);
-		font-family: 'SF Mono', 'Consolas', monospace;
+		font-family: 'JetBrains Mono', monospace;
 	}
 
 	.validation-section h4,
@@ -174,7 +174,7 @@
 		font-size: 12px;
 		color: var(--danger);
 		padding: 4px 0;
-		font-family: 'SF Mono', 'Consolas', monospace;
+		font-family: 'JetBrains Mono', monospace;
 	}
 
 	.collision-list li.more {

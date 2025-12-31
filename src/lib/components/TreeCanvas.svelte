@@ -105,17 +105,17 @@
 	</defs>
 	
 	<!-- Background -->
-	<rect x="-1000" y="-1000" width="2000" height="2000" fill="#f7fbff" />
+	<rect x="-1000" y="-1000" width="2000" height="2000" fill="#fafcff" />
 
 	<!-- Score info overlay at top of view -->
 	{#if n !== undefined && score !== undefined}
 		{@const vb = viewBoxData()}
 		{@const fontSize = vb.viewSide * 0.035}
-		{@const headerY = -vb.centerY - vb.viewSide / 2 - vb.headerHeight * 0.5}
+		{@const headerY = -vb.centerY - vb.viewSide / 2 - vb.headerHeight * 0.25}
 		<text
 			x={vb.centerX}
 			y={headerY}
-			font-family="'SF Mono', 'Consolas', monospace"
+			font-family="JetBrains Mono, monospace"
 			font-size={fontSize}
 			font-weight="700"
 			fill="#000000"
@@ -152,7 +152,7 @@
 <style>
 	.tree-canvas {
 		background: var(--canvas-bg);
-		border-radius: 8px;
+		border-radius: 12px;
 		box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
 	}
 </style>

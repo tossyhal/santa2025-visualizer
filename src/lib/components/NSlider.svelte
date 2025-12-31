@@ -138,7 +138,7 @@
 		height: 32px;
 		border: 1px solid var(--border);
 		border-radius: 6px;
-		background: #fff;
+		background: var(--panel);
 		color: var(--text);
 		font-size: 16px;
 		font-weight: 600;

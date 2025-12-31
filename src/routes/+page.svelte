@@ -275,7 +275,7 @@
 		--success: #2f855a;
 		--danger: #e11d48;
 		--shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
-		--canvas-bg: #f7fbff;
+		--canvas-bg: #fafcff;
 		--grid-line: #d8e4f5;
 		--bbox: #1d4ed8;
 	}
@@ -296,7 +296,7 @@
 	}
 
 	.header {
-		background: #ffffff;
+		background: var(--panel);
 		border-bottom: 1px solid var(--border);
 		padding: 20px 24px;
 		box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
@@ -561,7 +561,7 @@
 
 	.view-card {
 		background: var(--panel);
-		border-radius: 16px;
+		border-radius: 12px;
 		border: 1px solid var(--border);
 		padding: 16px;
 		display: flex;
@@ -667,7 +667,7 @@
 		font-size: 16px;
 		font-weight: 600;
 		color: var(--text);
-		font-family: 'JetBrains Mono', monospace;
+		font-family: 'Inter', 'Noto Sans JP', sans-serif;
 	}
 
 	.export-buttons {
@@ -739,7 +739,7 @@
 		padding: 16px 24px;
 		border-top: 1px solid var(--border);
 		text-align: center;
-		background: #f8fbff;
+		background: var(--panel);
 	}
 
 	.footer p {
